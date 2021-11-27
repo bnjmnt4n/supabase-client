@@ -25,6 +25,9 @@
     "url": "https://github.com/bnjmnt4n/supabase-client/issues"
   },
   "homepage": "https://github.com/bnjmnt4n/supabase-client#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^1.28.2"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
