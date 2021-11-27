@@ -1,8 +1,8 @@
-import { type PostgrestBuilder } from "@supabase/postgrest-js";
-import { FilterOperator } from "./filter-operator";
+import { type PostgrestTransformBuilder } from "./PostgrestTransformBuilder";
+import { type FilterOperator } from "./filter-operator";
 
 export interface PostgrestFilterBuilder<Definition>
-  extends PostgrestBuilder<Definition> {
+  extends PostgrestTransformBuilder<Definition> {
   /**
    * Finds all rows which doesn't satisfy the filter.
    *
