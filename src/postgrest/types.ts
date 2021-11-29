@@ -1,4 +1,9 @@
-import { type OneOrMore } from "postgrest-query";
+import {
+  type OneOrMore,
+  type GetDefinition,
+  type ParseQuery,
+} from "postgrest-query";
+import { type PostgrestFilterBuilder } from "./PostgrestFilterBuilder";
 
 export { type OneOrMore } from "postgrest-query";
 
@@ -50,3 +55,30 @@ export type PathValue<
   : P extends keyof T
   ? T[P]
   : never;
+
+/**
+ * Tries to get the type definition of a specific query's response by parsing the given columns for
+ * the given table using `postgrest-query`. Otherwise, returns the default definition.
+ *
+ * @param Definitions Type definitions of all tables.
+ * @param Definition The default definition.
+ * @param TableName The table name.
+ * @param Columns The columns to select from the given table.
+ */
+export type TryGetDefinition<
+  Definitions extends Record<string, Record<string, any>>,
+  Definition,
+  TableName extends string | null,
+  Columns extends string
+> = TableName extends string
+  ? ParseQuery<Columns> extends unknown[]
+    ? PostgrestFilterBuilder<
+        Definitions,
+        GetDefinition<Definitions, TableName, ParseQuery<Columns>>
+      >
+    : ParseQuery<Columns>
+  : PostgrestFilterBuilder<Definitions, Definition>;
+
+export type RemoveOneOrMore<T> = {
+  [Key in keyof T]: T[Key] extends OneOrMore<infer A> ? A | A[] : T[Key];
+};

@@ -1,9 +1,9 @@
 import { type PostgrestTransformBuilder } from "./PostgrestTransformBuilder";
 import { type FilterOperator } from "./filter-operator";
-import { type Path, type PathValue } from "./types";
+import { type RemoveOneOrMore, type Path, type PathValue } from "./types";
 
-export interface PostgrestFilterBuilder<Definition>
-  extends PostgrestTransformBuilder<Definition> {
+export interface PostgrestFilterBuilder<Definitions, Definition>
+  extends PostgrestTransformBuilder<RemoveOneOrMore<Definition>> {
   /**
    * Finds all rows which doesn't satisfy the filter.
    *

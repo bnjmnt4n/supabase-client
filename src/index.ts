@@ -7,13 +7,18 @@ import {
 
 export * from "./postgrest";
 
-export type SupabaseClient = {
+export type SupabaseClient<
+  Definitions extends Record<string, Record<string, any>>
+> = {
   /**
    * Perform a table operation.
    *
    * @param table The table name to operate on.
    */
-  from<T = any>(table: string): PostgrestQueryBuilder<T>;
+  from<TableName extends keyof Definitions & string>(
+    table: TableName
+  ): PostgrestQueryBuilder<Definitions, Definitions[TableName], TableName>;
+  from<T = any>(table: string): PostgrestQueryBuilder<Definitions, T>;
 
   /**
    * Perform a function call.
@@ -31,5 +36,5 @@ export type SupabaseClient = {
       head?: boolean;
       count?: null | "exact" | "planned" | "estimated";
     }
-  ): PostgrestFilterBuilder<T>;
+  ): PostgrestFilterBuilder<Definitions, T>;
 } & Omit<OriginalSupabaseClient, "from" | "rpc">;

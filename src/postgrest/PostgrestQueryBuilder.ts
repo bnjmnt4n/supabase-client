@@ -1,8 +1,12 @@
 import { type PostgrestBuilder } from "@supabase/postgrest-js";
 import { type PostgrestFilterBuilder } from "./PostgrestFilterBuilder";
+import { type RemoveOneOrMore, type TryGetDefinition } from "./types";
 
-export interface PostgrestQueryBuilder<Definition>
-  extends PostgrestBuilder<Definition> {
+export interface PostgrestQueryBuilder<
+  Definitions extends Record<string, Record<string, any>>,
+  Definition,
+  TableName extends string | null = null
+> extends PostgrestBuilder<RemoveOneOrMore<Definition>> {
   /**
    * Performs vertical filtering with SELECT.
    *
@@ -10,13 +14,20 @@ export interface PostgrestQueryBuilder<Definition>
    * @param options.head  When set to true, select will void data.
    * @param options.count  Count algorithm to use to count rows in a table.
    */
+  select<Columns extends string>(
+    columns: Columns,
+    options?: {
+      head?: boolean;
+      count?: null | "exact" | "planned" | "estimated";
+    }
+  ): TryGetDefinition<Definitions, Definition, TableName, Columns>;
   select(
     columns?: string,
     options?: {
       head?: boolean;
       count?: null | "exact" | "planned" | "estimated";
     }
-  ): PostgrestFilterBuilder<Definition>;
+  ): PostgrestFilterBuilder<Definitions, Definition>;
 
   /**
    * Performs an INSERT into the table.
@@ -31,7 +42,7 @@ export interface PostgrestQueryBuilder<Definition>
       returning?: "minimal" | "representation";
       count?: null | "exact" | "planned" | "estimated";
     }
-  ): PostgrestFilterBuilder<Definition>;
+  ): PostgrestFilterBuilder<Definitions, Definition>;
   /**
    * @deprecated Use `upsert()` instead.
    */
@@ -43,7 +54,7 @@ export interface PostgrestQueryBuilder<Definition>
       returning?: "minimal" | "representation";
       count?: null | "exact" | "planned" | "estimated";
     }
-  ): PostgrestFilterBuilder<Definition>;
+  ): PostgrestFilterBuilder<Definitions, Definition>;
   insert(
     values: Partial<Definition> | Partial<Definition>[],
     {
@@ -57,7 +68,7 @@ export interface PostgrestQueryBuilder<Definition>
       returning?: "minimal" | "representation";
       count?: null | "exact" | "planned" | "estimated";
     }
-  ): PostgrestFilterBuilder<Definition>;
+  ): PostgrestFilterBuilder<Definitions, Definition>;
 
   /**
    * Performs an UPSERT into the table.
@@ -81,7 +92,7 @@ export interface PostgrestQueryBuilder<Definition>
       count?: null | "exact" | "planned" | "estimated";
       ignoreDuplicates?: boolean;
     }
-  ): PostgrestFilterBuilder<Definition>;
+  ): PostgrestFilterBuilder<Definitions, Definition>;
 
   /**
    * Performs an UPDATE on the table.
@@ -99,7 +110,7 @@ export interface PostgrestQueryBuilder<Definition>
       returning?: "minimal" | "representation";
       count?: null | "exact" | "planned" | "estimated";
     }
-  ): PostgrestFilterBuilder<Definition>;
+  ): PostgrestFilterBuilder<Definitions, Definition>;
 
   /**
    * Performs a DELETE on the table.
@@ -113,5 +124,5 @@ export interface PostgrestQueryBuilder<Definition>
   }?: {
     returning?: "minimal" | "representation";
     count?: null | "exact" | "planned" | "estimated";
-  }): PostgrestFilterBuilder<Definition>;
+  }): PostgrestFilterBuilder<Definitions, Definition>;
 }

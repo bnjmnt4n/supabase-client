@@ -3,9 +3,10 @@ import {
   type PostgrestMaybeSingleResponse,
   type PostgrestSingleResponse,
 } from "@supabase/postgrest-js";
+import { type RemoveOneOrMore } from "./types";
 
 export interface PostgrestTransformBuilder<Definition>
-  extends PostgrestBuilder<Definition> {
+  extends PostgrestBuilder<RemoveOneOrMore<Definition>> {
   /**
    * Performs vertical filtering with SELECT.
    *
