@@ -1,7 +1,9 @@
 import { PostgrestFilterBuilder } from "./PostgrestFilterBuilder";
 import { PostgrestQueryBuilder } from "./PostgrestQueryBuilder";
 
-export interface PostgrestClient<Definition = any> {
+export interface PostgrestClient<
+  Definitions extends Record<string, Record<string, any>>
+> {
   /**
    * Authenticates the request with JWT.
    *
@@ -14,9 +16,10 @@ export interface PostgrestClient<Definition = any> {
    *
    * @param table  The table name to operate on.
    */
-  from<ConcreteDefinition = Definition>(
-    table: string
-  ): PostgrestQueryBuilder<ConcreteDefinition>;
+  from<TableName extends keyof Definitions & string>(
+    table: TableName
+  ): PostgrestQueryBuilder<Definitions, Definitions[TableName], TableName>;
+  from<T = any>(table: string): PostgrestQueryBuilder<Definitions, T>;
 
   /**
    * Perform a function call.
@@ -26,7 +29,7 @@ export interface PostgrestClient<Definition = any> {
    * @param head  When set to true, no data will be returned.
    * @param count  Count algorithm to use to count rows in a table.
    */
-  rpc<ConcreteDefinition = Definition>(
+  rpc<T = any>(
     fn: string,
     params?: object,
     {
@@ -36,5 +39,5 @@ export interface PostgrestClient<Definition = any> {
       head?: boolean;
       count?: null | "exact" | "planned" | "estimated";
     }
-  ): PostgrestFilterBuilder<ConcreteDefinition>;
+  ): PostgrestFilterBuilder<Definitions, T>;
 }
