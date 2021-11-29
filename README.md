@@ -71,7 +71,7 @@ Install using npm or yarn:
 
 ```sh
 npm i @supabase/supabase-js 
-npm i --D @bnjmnt4n/supbase-client
+npm i --D @bnjmnt4n/supabase-client
 ```
 
 For now, this package only provides alternative types for the `@supabase/supabase-js` client. TypeScript v4.5.0+ is required.
@@ -106,7 +106,7 @@ if (data) {
     // Array of products.
     data.products[0].id;
   } else {
-    // Single products.
+    // Single product.
     data.products.id;
   }
 }
