@@ -1,5 +1,6 @@
 import { type PostgrestTransformBuilder } from "./PostgrestTransformBuilder";
 import { type FilterOperator } from "./filter-operator";
+import { type Path, type PathValue } from "./types";
 
 export interface PostgrestFilterBuilder<Definition>
   extends PostgrestTransformBuilder<Definition> {
@@ -10,10 +11,10 @@ export interface PostgrestFilterBuilder<Definition>
    * @param operator  The operator to filter with.
    * @param value  The value to filter with.
    */
-  not<Column extends keyof Definition>(
+  not<Column extends Path<Definition>>(
     column: Column,
     operator: FilterOperator,
-    value: Definition[Column]
+    value: PathValue<Definition, Column>
   ): this;
 
   /**
@@ -24,6 +25,7 @@ export interface PostgrestFilterBuilder<Definition>
    */
   or(
     filters: string,
+    // TODO: `foreignTable`
     { foreignTable }?: { foreignTable?: keyof Definition }
   ): this;
 
@@ -34,9 +36,9 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param value  The value to filter with.
    */
-  eq<Column extends keyof Definition>(
+  eq<Column extends Path<Definition>>(
     column: Column,
-    value: Definition[Column]
+    value: PathValue<Definition, Column>
   ): this;
 
   /**
@@ -46,9 +48,9 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param value  The value to filter with.
    */
-  neq<Column extends keyof Definition>(
+  neq<Column extends Path<Definition>>(
     column: Column,
-    value: Definition[Column]
+    value: PathValue<Definition, Column>
   ): this;
 
   /**
@@ -58,9 +60,9 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param value  The value to filter with.
    */
-  gt<Column extends keyof Definition>(
+  gt<Column extends Path<Definition>>(
     column: Column,
-    value: Definition[Column]
+    value: PathValue<Definition, Column>
   ): this;
 
   /**
@@ -70,9 +72,9 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param value  The value to filter with.
    */
-  gte<Column extends keyof Definition>(
+  gte<Column extends Path<Definition>>(
     column: Column,
-    value: Definition[Column]
+    value: PathValue<Definition, Column>
   ): this;
 
   /**
@@ -82,9 +84,9 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param value  The value to filter with.
    */
-  lt<Column extends keyof Definition>(
+  lt<Column extends Path<Definition>>(
     column: Column,
-    value: Definition[Column]
+    value: PathValue<Definition, Column>
   ): this;
 
   /**
@@ -94,9 +96,9 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param value  The value to filter with.
    */
-  lte<Column extends keyof Definition>(
+  lte<Column extends Path<Definition>>(
     column: Column,
-    value: Definition[Column]
+    value: PathValue<Definition, Column>
   ): this;
 
   /**
@@ -106,7 +108,7 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param pattern  The pattern to filter with.
    */
-  like(column: keyof Definition, pattern: string): this;
+  like(column: Path<Definition>, pattern: string): this;
 
   /**
    * Finds all rows whose value in the stated `column` matches the supplied
@@ -115,7 +117,7 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param pattern  The pattern to filter with.
    */
-  ilike(column: keyof Definition, pattern: string): this;
+  ilike(column: Path<Definition>, pattern: string): this;
 
   /**
    * A check for exact equality (null, true, false), finds all rows whose
@@ -124,7 +126,7 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param value  The value to filter with.
    */
-  is(column: keyof Definition, value: boolean | null): this;
+  is(column: Path<Definition>, value: boolean | null): this;
 
   /**
    * Finds all rows whose value on the stated `column` is found on the
@@ -133,9 +135,9 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param values  The values to filter with.
    */
-  in<Column extends keyof Definition>(
+  in<Column extends Path<Definition>>(
     column: Column,
-    values: Definition[Column][]
+    values: PathValue<Definition, Column>[]
   ): this;
 
   /**
@@ -145,15 +147,15 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param value  The value to filter with.
    */
-  contains<Column extends keyof Definition>(
+  contains<Column extends Path<Definition>>(
     column: Column,
-    value: string | Definition[Column][] | object
+    value: string | PathValue<Definition, Column>[] | object
   ): this;
 
   /** @deprecated Use `contains()` instead. */
-  cs<Column extends keyof Definition>(
+  cs<Column extends Path<Definition>>(
     column: Column,
-    value: string | Definition[Column][] | object
+    value: string | PathValue<Definition, Column>[] | object
   ): this;
 
   /**
@@ -163,15 +165,15 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param value  The value to filter with.
    */
-  containedBy<Column extends keyof Definition>(
+  containedBy<Column extends Path<Definition>>(
     column: Column,
-    value: string | Definition[Column][] | object
+    value: string | PathValue<Definition, Column>[] | object
   ): this;
 
   /** @deprecated Use `containedBy()` instead. */
-  cd<Column extends keyof Definition>(
+  cd<Column extends Path<Definition>>(
     column: Column,
-    value: string | Definition[Column][] | object
+    value: string | PathValue<Definition, Column>[] | object
   ): this;
 
   /**
@@ -181,10 +183,10 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param range  The range to filter with.
    */
-  rangeLt(column: keyof Definition, range: string): this;
+  rangeLt(column: Path<Definition>, range: string): this;
 
   /** @deprecated Use `rangeLt()` instead. */
-  sl(column: keyof Definition, range: string): this;
+  sl(column: Path<Definition>, range: string): this;
 
   /**
    * Finds all rows whose range value on the stated `column` is strictly to
@@ -193,10 +195,10 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param range  The range to filter with.
    */
-  rangeGt(column: keyof Definition, range: string): this;
+  rangeGt(column: Path<Definition>, range: string): this;
 
   /** @deprecated Use `rangeGt()` instead. */
-  sr(column: keyof Definition, range: string): this;
+  sr(column: Path<Definition>, range: string): this;
 
   /**
    * Finds all rows whose range value on the stated `column` does not extend
@@ -205,10 +207,10 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param range  The range to filter with.
    */
-  rangeGte(column: keyof Definition, range: string): this;
+  rangeGte(column: Path<Definition>, range: string): this;
 
   /** @deprecated Use `rangeGte()` instead. */
-  nxl(column: keyof Definition, range: string): this;
+  nxl(column: Path<Definition>, range: string): this;
 
   /**
    * Finds all rows whose range value on the stated `column` does not extend
@@ -217,10 +219,10 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param range  The range to filter with.
    */
-  rangeLte(column: keyof Definition, range: string): this;
+  rangeLte(column: Path<Definition>, range: string): this;
 
   /** @deprecated Use `rangeLte()` instead. */
-  nxr(column: keyof Definition, range: string): this;
+  nxr(column: Path<Definition>, range: string): this;
 
   /**
    * Finds all rows whose range value on the stated `column` is adjacent to
@@ -229,10 +231,10 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param range  The range to filter with.
    */
-  rangeAdjacent(column: keyof Definition, range: string): this;
+  rangeAdjacent(column: Path<Definition>, range: string): this;
 
   /** @deprecated Use `rangeAdjacent()` instead. */
-  adj(column: keyof Definition, range: string): this;
+  adj(column: Path<Definition>, range: string): this;
 
   /**
    * Finds all rows whose array or range value on the stated `column` overlaps
@@ -241,15 +243,15 @@ export interface PostgrestFilterBuilder<Definition>
    * @param column  The column to filter on.
    * @param value  The value to filter with.
    */
-  overlaps<Column extends keyof Definition>(
+  overlaps<Column extends Path<Definition>>(
     column: Column,
-    value: string | Definition[Column][]
+    value: string | PathValue<Definition, Column>[]
   ): this;
 
   /** @deprecated Use `overlaps()` instead. */
-  ov<Column extends keyof Definition>(
+  ov<Column extends Path<Definition>>(
     column: Column,
-    value: string | Definition[Column][]
+    value: string | PathValue<Definition, Column>[]
   ): this;
 
   /**
@@ -262,7 +264,7 @@ export interface PostgrestFilterBuilder<Definition>
    * @param type  The type of tsquery conversion to use on `query`.
    */
   textSearch(
-    column: keyof Definition,
+    column: Path<Definition>,
     query: string,
     {
       config,
@@ -281,7 +283,7 @@ export interface PostgrestFilterBuilder<Definition>
    * @deprecated Use `textSearch()` instead.
    */
   fts(
-    column: keyof Definition,
+    column: Path<Definition>,
     query: string,
     { config }?: { config?: string }
   ): this;
@@ -297,7 +299,7 @@ export interface PostgrestFilterBuilder<Definition>
    * @deprecated Use `textSearch()` with `type: 'plain'` instead.
    */
   plfts(
-    column: keyof Definition,
+    column: Path<Definition>,
     query: string,
     { config }?: { config?: string }
   ): this;
@@ -313,7 +315,7 @@ export interface PostgrestFilterBuilder<Definition>
    * @deprecated Use `textSearch()` with `type: 'phrase'` instead.
    */
   phfts(
-    column: keyof Definition,
+    column: Path<Definition>,
     query: string,
     { config }?: { config?: string }
   ): this;
@@ -329,7 +331,7 @@ export interface PostgrestFilterBuilder<Definition>
    * @deprecated Use `textSearch()` with `type: 'websearch'` instead.
    */
   wfts(
-    column: keyof Definition,
+    column: Path<Definition>,
     query: string,
     { config }?: { config?: string }
   ): this;
@@ -341,7 +343,11 @@ export interface PostgrestFilterBuilder<Definition>
    * @param operator  The operator to filter with.
    * @param value  The value to filter with.
    */
-  filter(column: keyof Definition, operator: FilterOperator, value: any): this;
+  filter<Column extends Path<Definition>>(
+    column: Column,
+    operator: FilterOperator,
+    value: PathValue<Definition, Column>
+  ): this;
 
   /**
    * Finds all rows whose columns match the specified `query` object.
@@ -349,5 +355,6 @@ export interface PostgrestFilterBuilder<Definition>
    * @param query  The object to filter with, with column names as keys mapped
    *               to their filter values.
    */
+  // TODO: make this more accurate?
   match(query: Partial<Definition>): this;
 }
