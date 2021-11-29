@@ -24,7 +24,7 @@ export interface PostgrestFilterBuilder<Definition>
    */
   or(
     filters: string,
-    { foreignTable }: { foreignTable?: keyof Definition }
+    { foreignTable }?: { foreignTable?: keyof Definition }
   ): this;
 
   /**
@@ -150,6 +150,12 @@ export interface PostgrestFilterBuilder<Definition>
     value: string | Definition[Column][] | object
   ): this;
 
+  /** @deprecated Use `contains()` instead. */
+  cs<Column extends keyof Definition>(
+    column: Column,
+    value: string | Definition[Column][] | object
+  ): this;
+
   /**
    * Finds all rows whose json, array, or range value on the stated `column` is
    * contained by the specified `value`.
@@ -158,6 +164,12 @@ export interface PostgrestFilterBuilder<Definition>
    * @param value  The value to filter with.
    */
   containedBy<Column extends keyof Definition>(
+    column: Column,
+    value: string | Definition[Column][] | object
+  ): this;
+
+  /** @deprecated Use `containedBy()` instead. */
+  cd<Column extends keyof Definition>(
     column: Column,
     value: string | Definition[Column][] | object
   ): this;
@@ -171,6 +183,9 @@ export interface PostgrestFilterBuilder<Definition>
    */
   rangeLt(column: keyof Definition, range: string): this;
 
+  /** @deprecated Use `rangeLt()` instead. */
+  sl(column: keyof Definition, range: string): this;
+
   /**
    * Finds all rows whose range value on the stated `column` is strictly to
    * the right of the specified `range`.
@@ -179,6 +194,9 @@ export interface PostgrestFilterBuilder<Definition>
    * @param range  The range to filter with.
    */
   rangeGt(column: keyof Definition, range: string): this;
+
+  /** @deprecated Use `rangeGt()` instead. */
+  sr(column: keyof Definition, range: string): this;
 
   /**
    * Finds all rows whose range value on the stated `column` does not extend
@@ -189,6 +207,9 @@ export interface PostgrestFilterBuilder<Definition>
    */
   rangeGte(column: keyof Definition, range: string): this;
 
+  /** @deprecated Use `rangeGte()` instead. */
+  nxl(column: keyof Definition, range: string): this;
+
   /**
    * Finds all rows whose range value on the stated `column` does not extend
    * to the right of the specified `range`.
@@ -197,6 +218,9 @@ export interface PostgrestFilterBuilder<Definition>
    * @param range  The range to filter with.
    */
   rangeLte(column: keyof Definition, range: string): this;
+
+  /** @deprecated Use `rangeLte()` instead. */
+  nxr(column: keyof Definition, range: string): this;
 
   /**
    * Finds all rows whose range value on the stated `column` is adjacent to
@@ -207,6 +231,9 @@ export interface PostgrestFilterBuilder<Definition>
    */
   rangeAdjacent(column: keyof Definition, range: string): this;
 
+  /** @deprecated Use `rangeAdjacent()` instead. */
+  adj(column: keyof Definition, range: string): this;
+
   /**
    * Finds all rows whose array or range value on the stated `column` overlaps
    * (has a value in common) with the specified `value`.
@@ -215,6 +242,12 @@ export interface PostgrestFilterBuilder<Definition>
    * @param value  The value to filter with.
    */
   overlaps<Column extends keyof Definition>(
+    column: Column,
+    value: string | Definition[Column][]
+  ): this;
+
+  /** @deprecated Use `overlaps()` instead. */
+  ov<Column extends keyof Definition>(
     column: Column,
     value: string | Definition[Column][]
   ): this;
@@ -234,7 +267,71 @@ export interface PostgrestFilterBuilder<Definition>
     {
       config,
       type,
-    }: { config?: string; type?: "plain" | "phrase" | "websearch" | null }
+    }?: { config?: string; type?: "plain" | "phrase" | "websearch" | null }
+  ): this;
+
+  /**
+   * Finds all rows whose tsvector value on the stated `column` matches
+   * to_tsquery(`query`).
+   *
+   * @param column  The column to filter on.
+   * @param query  The Postgres tsquery string to filter with.
+   * @param config  The text search configuration to use.
+   *
+   * @deprecated Use `textSearch()` instead.
+   */
+  fts(
+    column: keyof Definition,
+    query: string,
+    { config }?: { config?: string }
+  ): this;
+
+  /**
+   * Finds all rows whose tsvector value on the stated `column` matches
+   * plainto_tsquery(`query`).
+   *
+   * @param column  The column to filter on.
+   * @param query  The Postgres tsquery string to filter with.
+   * @param config  The text search configuration to use.
+   *
+   * @deprecated Use `textSearch()` with `type: 'plain'` instead.
+   */
+  plfts(
+    column: keyof Definition,
+    query: string,
+    { config }?: { config?: string }
+  ): this;
+
+  /**
+   * Finds all rows whose tsvector value on the stated `column` matches
+   * phraseto_tsquery(`query`).
+   *
+   * @param column  The column to filter on.
+   * @param query  The Postgres tsquery string to filter with.
+   * @param config  The text search configuration to use.
+   *
+   * @deprecated Use `textSearch()` with `type: 'phrase'` instead.
+   */
+  phfts(
+    column: keyof Definition,
+    query: string,
+    { config }?: { config?: string }
+  ): this;
+
+  /**
+   * Finds all rows whose tsvector value on the stated `column` matches
+   * websearch_to_tsquery(`query`).
+   *
+   * @param column  The column to filter on.
+   * @param query  The Postgres tsquery string to filter with.
+   * @param config  The text search configuration to use.
+   *
+   * @deprecated Use `textSearch()` with `type: 'websearch'` instead.
+   */
+  wfts(
+    column: keyof Definition,
+    query: string,
+    { config }?: { config?: string }
   ): this;
 
   /**

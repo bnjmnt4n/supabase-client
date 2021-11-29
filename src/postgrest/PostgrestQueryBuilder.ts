@@ -7,15 +7,12 @@ export interface PostgrestQueryBuilder<Definition>
    * Performs vertical filtering with SELECT.
    *
    * @param columns  The columns to retrieve, separated by commas.
-   * @param head  When set to true, select will void data.
-   * @param count  Count algorithm to use to count rows in a table.
+   * @param options.head  When set to true, select will void data.
+   * @param options.count  Count algorithm to use to count rows in a table.
    */
   select(
     columns?: string,
-    {
-      head,
-      count,
-    }?: {
+    options?: {
       head?: boolean;
       count?: null | "exact" | "planned" | "estimated";
     }
@@ -25,8 +22,8 @@ export interface PostgrestQueryBuilder<Definition>
    * Performs an INSERT into the table.
    *
    * @param values  The values to insert.
-   * @param returning  By default the new record is returned. Set this to 'minimal' if you don't need this value.
-   * @param count  Count algorithm to use to count rows in a table.
+   * @param options.returning  By default the new record is returned. Set this to 'minimal' if you don't need this value.
+   * @param options.count  Count algorithm to use to count rows in a table.
    */
   insert(
     values: Partial<Definition> | Partial<Definition>[],
